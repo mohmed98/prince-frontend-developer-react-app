@@ -89,3 +89,19 @@ export const fetchAllCaspsules = () => async (dispatch) => {
   }
 };
 
+export const fetchCaspsuleDetails = (capsuleSerial) => async (dispatch, getState) => {
+  dispatch(setSelectedCapsule(null));
+  dispatch(setLoadingCapsuleDetails(true));
+  dispatch(setLoadingCapsuleDetailsFailed(false));
+  try {
+    const response = await getData(`http://localhost/spacex/api/capsule/${capsuleSerial}`);
+    const { data } = response;
+
+    dispatch(setSelectedCapsule(data));
+    dispatch(setLoadingCapsuleDetails(false));
+  } catch (error) {
+    dispatch(setLoadingCapsuleDetails(false));
+    dispatch(setLoadingCapsuleDetailsFailed(true));
+  }
+};
+

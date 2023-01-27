@@ -1,6 +1,7 @@
 import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
 
 
 export const TableLoader = () => {
@@ -29,4 +30,17 @@ export const TableLoader = () => {
       </Stack>
     </Paper>
   );
+}
+
+export const CapsuleDetailsLoader = () => {
+  return (
+    <>
+      <Skeleton variant="rectangular" height={118} />
+      <Skeleton width="30%" />
+      <Box sx={{ pt: 0.5 }}>
+        <Skeleton />
+        <Skeleton width="60%" />
+      </Box>
+    </>
+  )
 }

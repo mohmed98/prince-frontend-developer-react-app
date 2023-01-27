@@ -13,8 +13,13 @@ import RocketIcon from '@mui/icons-material/Rocket';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import DataTable from './components/DataTable';
-import { fetchAllCaspsules } from './store/capsulesSlice';
 import moment from 'moment';
+import {
+  fetchAllCaspsules,
+  fetchCaspsuleDetails,
+  setSelectedCapsule
+} from './store/capsulesSlice';
+import CapsuleDetails from './components/CapsuleDetails';
 
 const theme = createTheme();
 
@@ -35,7 +40,10 @@ export default function App() {
 
   const {
     allCapsules,
-    loadingAllCapsules
+    loadingAllCapsules,
+    selectedCapsule,
+    loadingCapsuleDetails,
+    loadingCapsuleDetailsFailed
   } = useSelector(state => state.capsules);
 
   const [filters, setFilters] = useState({
@@ -43,10 +51,21 @@ export default function App() {
     type: '',
     date: ''
   });
+  const [openDetails, setOpenDetails] = useState(false);
 
   useEffect(() => {
     return () => dispatch(fetchAllCaspsules());
   }, [dispatch]);
+
+  const handleRowClick = (data) => {
+    dispatch(fetchCaspsuleDetails(data.capsule_serial));
+    setOpenDetails(true);
+  }
+
+  const handleClose = () => {
+    dispatch(setSelectedCapsule(null));
+    setOpenDetails(false);
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -135,7 +154,7 @@ export default function App() {
 
         {/* Table section*/}
         <Container sx={{ py: 1 }}>
-          <Grid container sx={{ p: 2 }} justifyContent="center" alignItems="center">
+          <Grid container sx={{ p: 1 }} justifyContent="center" alignItems="center">
             <Typography variant="body4" color="text.secondary" align="center">
               A list of capsules
             </Typography>
@@ -144,6 +163,7 @@ export default function App() {
             tableHeaders={tableHeaders}
             tableData={allCapsules}
             isLoading={loadingAllCapsules}
+            onRowClick={handleRowClick}
           />
         </Container>
         {/*End Table section*/}
@@ -170,6 +190,16 @@ export default function App() {
           {'.'}
         </Typography>
       </Box>
+
+      {openDetails && (
+        <CapsuleDetails
+          open={openDetails}
+          handleClose={handleClose}
+          capsuleInfo={selectedCapsule}
+          isLoading={loadingCapsuleDetails}
+          loadingFailed={loadingCapsuleDetailsFailed}
+        />
+      )}
     </ThemeProvider>
   );
 }
