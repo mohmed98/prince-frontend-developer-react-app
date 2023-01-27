@@ -20,6 +20,7 @@ import {
   setSelectedCapsule
 } from './store/capsulesSlice';
 import CapsuleDetails from './components/CapsuleDetails';
+import Notify from './components/Notify';
 
 const theme = createTheme();
 
@@ -43,7 +44,8 @@ export default function App() {
     loadingAllCapsules,
     selectedCapsule,
     loadingCapsuleDetails,
-    loadingCapsuleDetailsFailed
+    loadingCapsuleDetailsFailed,
+    loadingAllCapsulesFailed
   } = useSelector(state => state.capsules);
 
   const [filters, setFilters] = useState({
@@ -52,6 +54,12 @@ export default function App() {
     date: ''
   });
   const [openDetails, setOpenDetails] = useState(false);
+  const [showAlert, setShowAlert] = useState({
+    open: false,
+    message: '',
+    type: ''
+  });
+
   const filteredData = allCapsules.filter((capsule) =>
     capsule.status.toLowerCase().includes(filters.status.toLocaleLowerCase()) &&
     capsule.type.toLowerCase().includes(filters.type.toLocaleLowerCase()) &&
@@ -61,6 +69,24 @@ export default function App() {
   useEffect(() => {
     return () => dispatch(fetchAllCaspsules());
   }, [dispatch]);
+
+  useEffect(() => {
+    loadingAllCapsulesFailed && setShowAlert({
+      open: true,
+      message: 'Loading all capsules failed',
+      type: 'error'
+    });
+  }, [loadingAllCapsulesFailed]);
+
+  useEffect(() => {
+    if (loadingCapsuleDetailsFailed) {
+      setShowAlert({
+        open: true,
+        message: 'Loading capsule details failed',
+        type: 'error'
+      });
+    }
+  }, [loadingCapsuleDetailsFailed]);
 
   const handleRowClick = (data) => {
     dispatch(fetchCaspsuleDetails(data.capsule_serial));
@@ -202,6 +228,15 @@ export default function App() {
           capsuleInfo={selectedCapsule}
           isLoading={loadingCapsuleDetails}
           loadingFailed={loadingCapsuleDetailsFailed}
+        />
+      )}
+
+      {showAlert.open && (
+        <Notify
+          open={showAlert.open}
+          notifyType={showAlert.type}
+          message={showAlert.message}
+          closeNotification={() => setShowAlert({ ...showAlert, open: false })}
         />
       )}
     </ThemeProvider>
