@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
@@ -9,10 +9,19 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Divider from '@mui/material/Divider';
 import RocketIcon from '@mui/icons-material/Rocket';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
 
 const theme = createTheme();
 
+
 export default function App() {
+
+  const [filters, setFilters] = useState({
+    status: '',
+    type: '',
+    date: ''
+  });
 
   return (
     <ThemeProvider theme={theme}>
@@ -56,9 +65,46 @@ export default function App() {
         {/* Filters section */}
         <Container sx={{ py: 2 }}>
           <Grid container spacing={2} justifyContent="center" alignItems="center">
-            <Typography variant="body4" color="text.secondary" align="center">
-              Filters
-            </Typography>
+
+            <Stack
+              component="form"
+              direction={{ xs: 'column', sm: 'row' }}
+              mt={2}
+              spacing={2}
+              autoComplete="off"
+            >
+              <Typography pt={1} variant="h6" color="text.secondary" align="center">
+                Filters:
+              </Typography>
+              <TextField
+                label="Filter by Status"
+                id="status"
+                name="status"
+                size="small"
+                type="string"
+                onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+                value={filters.status || ''}
+              />
+              <TextField
+                label="Filter by Type"
+                id="type"
+                name="type"
+                size="small"
+                type="string"
+                onChange={(e) => setFilters({ ...filters, type: e.target.value })}
+                value={filters.type}
+              />
+              <TextField
+                label="Filter by Launch Date"
+                id="date"
+                name="date"
+                size="small"
+                type="date"
+                InputLabelProps={{ shrink: true }}
+                onChange={(e) => setFilters({ ...filters, date: e.target.value })}
+                value={filters.date}
+              />
+            </Stack>
           </Grid>
         </Container>
         {/* Filters End*/}
