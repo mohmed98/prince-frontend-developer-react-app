@@ -13,8 +13,8 @@ import RocketIcon from '@mui/icons-material/Rocket';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import DataTable from './components/DataTable';
-
 import { fetchAllCaspsules } from './store/capsulesSlice';
+import moment from 'moment';
 
 const theme = createTheme();
 
@@ -22,7 +22,7 @@ const tableHeaders = [
   { id: 'capsule_id', label: 'ID' },
   { id: 'capsule_serial', label: 'Serial' },
   { id: 'type', label: 'Type' },
-  { id: 'original_launch', label: 'Launched On'},
+  { id: 'original_launch', label: 'Launched On', render: (value) => value ? moment(value).format('lll') : 'unknown' },
   { id: 'missions', label: 'Missions', align: 'right', render: (value) => value.length },
   { id: 'reuse_count', label: 'Reuse Count', align: 'right' },
   { id: 'status', label: 'Status' }
