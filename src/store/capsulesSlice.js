@@ -1,4 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { getData } from '../utils';
+
 
 const initialState = {
   loadingAllCapsules: false,
@@ -70,5 +72,20 @@ export const {
 
 export default capsulesSlice.reducer;
 
+// Thunks
+export const fetchAllCaspsules = () => async (dispatch) => {
+  dispatch(setAllCapusules([]));
+  dispatch(setLoadingAllCapsules(true));
+  dispatch(setLoadingAllCapsulesFailed(false));
+  try {
+    const response = await getData('http://localhost/spacex/api/capsules');
+    const { data } = response;
 
+    dispatch(setAllCapusules(data));
+    dispatch(setLoadingAllCapsules(false));
+  } catch (error) {
+    dispatch(setLoadingAllCapsules(false));
+    dispatch(setLoadingAllCapsulesFailed(true));
+  }
+};
 

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import AppBar from '@mui/material/AppBar';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
@@ -11,17 +12,41 @@ import Divider from '@mui/material/Divider';
 import RocketIcon from '@mui/icons-material/Rocket';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
+import DataTable from './components/DataTable';
+
+import { fetchAllCaspsules } from './store/capsulesSlice';
 
 const theme = createTheme();
 
+const tableHeaders = [
+  { id: 'capsule_id', label: 'ID' },
+  { id: 'capsule_serial', label: 'Serial' },
+  { id: 'type', label: 'Type' },
+  { id: 'original_launch', label: 'Launched On'},
+  { id: 'missions', label: 'Missions', align: 'right', render: (value) => value.length },
+  { id: 'reuse_count', label: 'Reuse Count', align: 'right' },
+  { id: 'status', label: 'Status' }
+];
+
 
 export default function App() {
+
+  const dispatch = useDispatch();
+
+  const {
+    allCapsules,
+    loadingAllCapsules
+  } = useSelector(state => state.capsules);
 
   const [filters, setFilters] = useState({
     status: '',
     type: '',
     date: ''
   });
+
+  useEffect(() => {
+    return () => dispatch(fetchAllCaspsules());
+  }, [dispatch]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -65,7 +90,6 @@ export default function App() {
         {/* Filters section */}
         <Container sx={{ py: 2 }}>
           <Grid container spacing={2} justifyContent="center" alignItems="center">
-
             <Stack
               component="form"
               direction={{ xs: 'column', sm: 'row' }}
@@ -116,6 +140,11 @@ export default function App() {
               A list of capsules
             </Typography>
           </Grid>
+          <DataTable
+            tableHeaders={tableHeaders}
+            tableData={allCapsules}
+            isLoading={loadingAllCapsules}
+          />
         </Container>
         {/*End Table section*/}
       </main>
