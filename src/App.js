@@ -52,6 +52,11 @@ export default function App() {
     date: ''
   });
   const [openDetails, setOpenDetails] = useState(false);
+  const filteredData = allCapsules.filter((capsule) =>
+    capsule.status.toLowerCase().includes(filters.status.toLocaleLowerCase()) &&
+    capsule.type.toLowerCase().includes(filters.type.toLocaleLowerCase()) &&
+    capsule?.original_launch?.includes(filters.date)
+  );
 
   useEffect(() => {
     return () => dispatch(fetchAllCaspsules());
@@ -142,8 +147,7 @@ export default function App() {
                 id="date"
                 name="date"
                 size="small"
-                type="date"
-                InputLabelProps={{ shrink: true }}
+                type="text"
                 onChange={(e) => setFilters({ ...filters, date: e.target.value })}
                 value={filters.date}
               />
@@ -161,7 +165,7 @@ export default function App() {
           </Grid>
           <DataTable
             tableHeaders={tableHeaders}
-            tableData={allCapsules}
+            tableData={filteredData}
             isLoading={loadingAllCapsules}
             onRowClick={handleRowClick}
           />
